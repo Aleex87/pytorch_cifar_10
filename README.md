@@ -11,6 +11,51 @@ Each image has shape (32, 32, 3), meaning:
 
 This results in 32 × 32 × 3 = 3072 numerical values per image.
 
+## Custom Data Preparation Pipeline
+
+The dataset was manually downloaded in its original CIFAR-10 binary format (cifar-10-batches-py).
+
+The raw dataset consists of serialized batch files where each image is stored as a flattened vector of 3072 values (32 × 32 × 3).
+
+Instead of relying on prebuilt dataset loaders, a dedicated preprocessing script (prepare_data.py) was implemented.
+
+This script performs the following operations:
+
+Reads CIFAR-10 batch files using Python's pickle
+
+Extracts image data and corresponding labels
+
+Reshapes each flattened image from 3072 values into a 32×32×3 tensor
+
+Converts NumPy arrays into PNG image files
+
+Saves images into class-specific directories
+
+The final dataset structure follows a standard image classification layout:
+
+data/processed/
+    train/
+        airplane/
+        automobile/
+        ...
+    test/
+        airplane/
+        automobile/
+        ...
+
+
+This approach ensures:
+
+Full transparency in data handling
+
+Explicit transformation of raw numerical arrays into image format
+
+Compatibility with PyTorch dataset utilities
+
+Reproducibility of the preprocessing pipeline
+
+By implementing a custom preprocessing stage, the project demonstrates an understanding of how raw image datasets are internally structured and how they can be programmatically reconstructed into usable formats.
+
 ### Why not use a fully connected network (MLP)?
 
 In class, we have seen that images can be flattened into a vector of 3072 features and then passed through a fully connected neural network (MLP). 
