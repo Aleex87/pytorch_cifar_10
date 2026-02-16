@@ -232,7 +232,13 @@ This approach ensures:
 
 By explicitly handling the dataset conversion process, the project avoids relying on prebuilt dataset loaders and demonstrates a deeper understanding of data preparation workflows.
 
-## result after firs run:
+## Training Procedure and Model Checkpointing
+
+After verifying that the data pipeline and CNN architecture were correctly implemented, the training process was executed using `main.py`.
+
+During the first run, we monitored the training and validation loss values printed in the terminal. We observed that while the training loss continuously decreased, the validation loss reached a minimum at a certain epoch and then started to increase slightly. This behavior indicates the beginning of overfitting.
+
+Terminal output:
 using device: cpu
 
 Epoch 1/5
@@ -259,3 +265,33 @@ Epoch 5/5
 ---------------------------------------------
 Train Loss: 0.5378
 Validation Loss: 0.8966
+
+
+To address this, we introduced two important mechanisms:
+
+#### 1. Model Checkpointing
+
+The model is saved whenever the validation loss improves. This ensures that we keep the best-performing version of the model instead of only the final epoch.
+
+```python
+torch.save(model.state_dict(), "models/best_model.pth")
+```
+This file contains the learned parameters (weights) of the network and can later be loaded for inference or evaluation.
+
+### 2. Early Stopping
+
+A simple early stopping mechanism was implemented using a patience counter. If the validation loss does not improve for a predefined number of epochs, the training process is stopped early.
+This prevents unnecessary overfitting and reduces training time.
+
+As a result, the training process now:
+- Monitors validation loss
+- Saves the best model automatically
+- Stops training when no further improvement is observed
+
+The trained models are tracked using DVC to ensure proper version control of large binary artifacts without committing them directly to Git.
+
+
+
+
+
+
