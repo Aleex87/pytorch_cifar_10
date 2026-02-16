@@ -1,5 +1,6 @@
 import torch
-
+import os
+os.makedirs("models", exist_ok=True)
 
 def train_model(model,
                 train_loader,
@@ -9,6 +10,9 @@ def train_model(model,
                 device,
                 num_epochs=10):
     
+    best_val_loss = float("inf")
+    patience = 2
+    counter = 0 
 
     model.to(device)
 
@@ -78,5 +82,19 @@ def train_model(model,
                 total_val_samples += batch_size
 
         average_val_loss = val_loss / total_val_samples
+
+        # detect and save the best model
+        if average_val_loss < best_val_loss:
+            best_val_loss = average_val_loss
+            counter = 0
+            torch.save(model.state_dict(), "models/best_model.pth")
+            print("Best model saved.")
+        else:
+            counter += 1
+            print(f"No improvement. Counter: {counter}")
+
+        if counter >= patience:
+            print("Early stopping triggered.")
+            break
 
         print(f"Validation Loss: {average_val_loss:.4f}")

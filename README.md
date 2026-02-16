@@ -231,3 +231,31 @@ This approach ensures:
 - Compatibility with PyTorch custom Dataset classes
 
 By explicitly handling the dataset conversion process, the project avoids relying on prebuilt dataset loaders and demonstrates a deeper understanding of data preparation workflows.
+
+## result after firs run:
+using device: cpu
+
+Epoch 1/5
+---------------------------------------------
+Train Loss: 1.2733
+Validation Loss: 1.0176
+
+Epoch 2/5
+---------------------------------------------
+Train Loss: 0.9078
+Validation Loss: 0.8769
+
+Epoch 3/5
+---------------------------------------------
+Train Loss: 0.7585
+Validation Loss: 0.8973
+
+Epoch 4/5
+---------------------------------------------
+Train Loss: 0.6402
+Validation Loss: 0.8890
+
+Epoch 5/5
+---------------------------------------------
+Train Loss: 0.5378
+Validation Loss: 0.8966
