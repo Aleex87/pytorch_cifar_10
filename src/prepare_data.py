@@ -25,7 +25,7 @@ def save_split(
 ):
     """
     Reads CIFAR-10 batch files and saves images into:
-      out_root/<class_name>/<prefix>_<global_index>.png
+      pytorch/data/processed/<index_test>,<index_train>/.png
     """
     out_root.mkdir(parents=True, exist_ok=True)
 

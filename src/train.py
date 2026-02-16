@@ -30,7 +30,7 @@ def train_model(model,
             images = images.to(device)
             labels = labels.to(device)
 
-            # Reset gradients
+            # Reset gradients otherwhise it will sum all
             optimizer.zero_grad()
 
             # Forward pass
@@ -47,6 +47,7 @@ def train_model(model,
 
             # Accumulate loss
             batch_size = images.size(0)
+           # loss.item is the avarage of the batch
             train_loss += loss.item() * batch_size
             total_train_samples += batch_size
 
