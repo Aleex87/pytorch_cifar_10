@@ -87,7 +87,7 @@ def train_model(model,
         if average_val_loss < best_val_loss:
             best_val_loss = average_val_loss
             counter = 0
-            torch.save(model.state_dict(), "models/best_model.pth")
+            torch.save(model.state_dict(), "models/exp1_lr001_bc64.pth")
             print("Best model saved.")
         else:
             counter += 1

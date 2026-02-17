@@ -290,6 +290,87 @@ As a result, the training process now:
 
 The trained models are tracked using DVC to ensure proper version control of large binary artifacts without committing them directly to Git.
 
+## Experiments
+
+To evaluate the effect of different hyperparameters, three experiments were conducted.
+
+Each experiment was trained using early stopping and model checkpointing. The best model (based on validation loss) was automatically saved.
+
+### Experiment 1 – Baseline
+
+- Learning rate: 0.001
+- Batch size: 32
+- Epochs: 5
+
+### Experiment 2 – Lower Learning Rate
+
+- Learning rate: 0.0005
+- Batch size: 32
+- Epochs: 5
+
+The hypothesis was that a lower learning rate would result in a slower but more stable convergence.
+
+### Experiment 3 – Larger Batch Size
+
+- Learning rate: 0.001
+- Batch size: 64
+- Epochs: 5
+
+The hypothesis was that a larger batch size would produce more stable gradient updates.
+
+---
+
+### Results Summary
+
+| Experiment | Learning Rate | Batch Size | Best Validation Loss    |
+|------------|--------------|------------|--------------------------|
+| Exp 1      | 0.001        | 32         | 0.8277    Best Epoch = 4 |
+| Exp 2      | 0.0005       | 32         | 0.8445    Best Epoch = 5 |
+| Exp 3      | 0.001        | 64         | 0.8361    Best Epoch = 5 |
+
+The best performing configuration will be selected based on the lowest validation loss.
+
+## Model Comparison and Analysis
+
+### Best Performing Configuration
+
+The best performing configuration was:
+
+- **Learning Rate:** 0.001  
+- **Batch Size:** 32  
+- **Best Validation Loss:** 0.8277  
+
+This configuration achieved the lowest validation loss among the three experiments.
+
+### Learning Rate Comparison (0.001 vs 0.0005)
+
+Reducing the learning rate from 0.001 to 0.0005 resulted in:
+
+- A smoother and more gradual decrease in validation loss
+- Slower convergence
+- Slightly worse performance within 5 epochs
+
+Although the lower learning rate produced stable training behavior, it likely requires more epochs to reach competitive performance. With only 5 epochs, it did not outperform the baseline configuration.
+
+### Batch Size Comparison (32 vs 64)
+
+Increasing the batch size from 32 to 64 resulted in:
+
+- More stable gradients
+- Reduced variance during training
+- No clear signs of overfitting
+
+However, the final validation performance was slightly inferior to the batch size of 32.
+This can be explained by the fact that with the same number of epochs:
+
+- A smaller batch size performs more parameter updates per epoch
+- A larger batch size performs fewer updates per epoch
+
+Therefore, within a limited training duration (5 epochs), batch size 32 achieved slightly better generalization.
+
+### Final Observation
+
+For the current architecture and training setup, a learning rate of 0.001 and batch size of 32 provide the best trade-off between convergence speed and validation performance.
 
 
 
