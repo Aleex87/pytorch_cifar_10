@@ -50,6 +50,8 @@ def predict_image(model, image_path, device):
 
     image = transform(image)
     image = image.unsqueeze(0) 
+    # unsquese(0) add a bath dimention ay position 0 
+    # which is required because the model expects batched input.
 
     with torch.no_grad():
         output = model(image.to(device))

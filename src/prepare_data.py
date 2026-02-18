@@ -23,10 +23,10 @@ def save_split(
     class_names: list[str],
     prefix: str,
 ):
-    """
-    Reads CIFAR-10 batch files and saves images into:
-      pytorch/data/processed/<index_test>,<index_train>/.png
-    """
+    
+    # Reads CIFAR-10 batch files and saves images into:
+    # pytorch/data/processed/<index_test>,<index_train>/.png
+    
     out_root.mkdir(parents=True, exist_ok=True)
 
     global_idx = 0
@@ -56,7 +56,7 @@ def main():
     meta_path = raw_dir / "batches.meta"
 
     if not raw_dir.exists():
-        raise FileNotFoundError(f"Non trovo {raw_dir}. Sei nella root del progetto?")
+        raise FileNotFoundError(f"Not found {raw_dir}. are you in the rigth folder?")
 
     class_names = load_class_names(meta_path)
 
@@ -68,13 +68,13 @@ def main():
     out_train = Path("data/processed/train")
     out_test = Path("data/processed/test")
 
-    print("Salvo TRAIN in:", out_train)
+    print("Saved TRAIN in:", out_train)
     save_split(train_batches, out_train, class_names, prefix="train")
 
-    print("Salvo TEST in:", out_test)
+    print("Saved TEST in:", out_test)
     save_split(test_batches, out_test, class_names, prefix="test")
 
-    print("Fatto.")
+    print("Done.")
 
 
 if __name__ == "__main__":

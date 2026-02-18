@@ -3,11 +3,7 @@ import torch.nn as nn
 
 
 class SimpleCNN(nn.Module):
-    """
-    Input:  (B, 3, 32, 32)
-    Output: (B, 10)
-    """
-
+   
     def __init__(self, num_classes: int = 10):
         super().__init__()
 

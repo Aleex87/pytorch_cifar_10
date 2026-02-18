@@ -56,6 +56,7 @@ Drag and drop one or more .png, .jpg, or .jpeg images into this folder.
 
 Run:
 python -m src.inference
+(venv must be activ)
 
 The script will:
 
