@@ -101,6 +101,7 @@ This script performs the following operations:
 
 The final dataset structure follows a standard image classification layout:
 
+```bash
 data/processed/
     train/
         airplane/
@@ -110,6 +111,8 @@ data/processed/
         airplane/
         automobile/
         ...
+
+´´´
 
 This approach ensures:
 
@@ -166,7 +169,7 @@ This ensures that the dataset is correctly prepared and ready for training in a 
 
 To ensure modularity, readability, and reproducibility, the project is structured following a separation-of-concerns design. Each component of the machine learning pipeline is isolated into dedicated modules.
 The directory structure is organized as follows:
-
+```bash
 k2-ml-project/
 │
 ├── data/
@@ -188,6 +191,7 @@ k2-ml-project/
 ├── pyproject.toml
 ├── uv.lock
 └── README.md
+```
 
 ## Modular Design
 
