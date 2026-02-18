@@ -1,4 +1,4 @@
-# pytorch_cifar_10
+# PyTorch CIFAR-10 Deep Learning Pipeline
 
 ## Dataset and Modeling Choice
 
@@ -11,6 +11,77 @@ Each image has shape (32, 32, 3), meaning:
 
 This results in 32 × 32 × 3 = 3072 numerical values per image.
 
+This project implements a complete Deep Learning pipeline using PyTorch, including:
+
+- Data loading and preprocessing
+- CNN model training
+- Hyperparameter experimentation
+- Model checkpointing and early stopping
+- Model versioning with DVC
+- Inference on new unseen images
+
+## Environment Setup
+
+This project uses `uv` for dependency management.
+
+To install all required dependencies and reproduce the same environment:
+
+```bash
+uv sync
+```
+This command installs all dependencies defined in the project configuration and ensures reproducibility.
+
+## Training the Model
+
+The entire training pipeline can be executed using:
+python main.py
+This will:
+
+1. Load the dataset
+2. Build the CNN model
+3. Train the network
+4. Monitor validation loss
+5. Apply early stopping
+6. Automatically save only the best model inside the models/ directory
+
+All trained models are tracked using DVC to avoid committing large binary files to Git.
+
+# Running Inference (Testing the Model)
+
+To test the trained model on new images:
+Create a folder in the project root named:
+> inference_images/
+
+Drag and drop one or more .png, .jpg, or .jpeg images into this folder.
+
+Run:
+python -m src.inference
+
+The script will:
+
+- Load the best trained model
+- Apply the same preprocessing used during training
+- Predict the class for each image
+- Print the predicted class and confidence score
+
+## Supported Classes
+
+The model was trained on CIFAR-10 and can classify the following 10 categories:
+
+- airplane
+- automobile
+- bird
+- cat
+- deer
+- dog
+- frog
+- horse
+- ship
+- truck
+
+If an image outside these categories is provided, the model will still output one of these 10 classes, since it was trained in a closed-set classification setting.
+
+
 ## Custom Data Preparation Pipeline
 
 The dataset was manually downloaded in its original CIFAR-10 binary format (cifar-10-batches-py).
@@ -21,15 +92,11 @@ Instead of relying on prebuilt dataset loaders, a dedicated preprocessing script
 
 This script performs the following operations:
 
-Reads CIFAR-10 batch files using Python's pickle
-
-Extracts image data and corresponding labels
-
-Reshapes each flattened image from 3072 values into a 32×32×3 tensor
-
-Converts NumPy arrays into PNG image files
-
-Saves images into class-specific directories
+1. Reads CIFAR-10 batch files using Python's pickle
+2. Extracts image data and corresponding labels
+3. Reshapes each flattened image from 3072 values into a 32×32×3 tensor
+4. Converts NumPy arrays into PNG image files
+5. Saves images into class-specific directories
 
 The final dataset structure follows a standard image classification layout:
 
@@ -43,18 +110,23 @@ data/processed/
         automobile/
         ...
 
-
 This approach ensures:
 
-Full transparency in data handling
+- Full transparency in data handling
+- Explicit transformation of raw numerical arrays into image format
+- Compatibility with PyTorch dataset utilities
 
-Explicit transformation of raw numerical arrays into image format
+> **Note:**
+**The raw dataset is not included in the repository.**
+**It must be downloaded manually and placed inside `data/raw`.**
+https://www.kaggle.com/datasets/harshajakkam/cifar-10-python-cifar-10-python-tar-gz
 
-Compatibility with PyTorch dataset utilities
 
-Reproducibility of the preprocessing pipeline
+### Reproducibility of the preprocessing pipeline
 
 By implementing a custom preprocessing stage, the project demonstrates an understanding of how raw image datasets are internally structured and how they can be programmatically reconstructed into usable formats.
+
+
 
 ### Why not use a fully connected network (MLP)?
 
@@ -108,9 +180,8 @@ k2-ml-project/
 │   ├── dataset.py
 │   ├── model.py
 │   ├── train.py
-│   ├── evaluate.py
-│   ├── utils.py
-│   └── config.py
+│   ├── prepare_data.py
+│   └── inference.py
 │
 ├── main.py
 ├── pyproject.toml
@@ -130,14 +201,8 @@ Contains the CNN architecture implemented as a subclass of torch.nn.Module.
 > train.py
 Implements the training loop, optimizer step, and loss computation.
 
-> evaluate.py
-Handles model evaluation and metric computation.
-
-> utils.py
-Contains helper functions such as seed setting and metric saving.
-
-> config.py
-Centralizes hyperparameters and experiment configuration.
+> inference.py  
+Loads a trained model and performs predictions on new unseen images.
 
 > main.py
 Acts as the entry point of the project.
@@ -174,7 +239,7 @@ Since image datasets are large and unsuitable for Git tracking, DVC is used to:
 - Maintain reproducibility of experiments
 
 The dataset is stored in:
-> data/row
+> data/raw
 
 and tracked using:
 > dvc add data/raw
@@ -191,46 +256,12 @@ This separation ensures:
 The entire workflow can be executed using:
 > python main.py
 
-All components are deterministic and reproducible thanks to:
+The workflow is reproducible thanks to:
 
-- Fixed random seeds
-- Centralized configuration
-- Version-controlled dependencies
-- DVC-managed datasets
-
-This guarantees that experiments can be reproduced consistently across different environments.
-
-## Dataset Acquisition and Preprocessing Strategy
-
-For this project, the dataset was not loaded using prebuilt utilities such as sklearn.datasets or torchvision.datasets.CIFAR10.
-Instead, the dataset was manually downloaded from Kaggle in raw format. The original data was provided as NumPy arrays (.npy) and corresponding label files.
-To create a structured and reusable dataset format, a custom preprocessing script was implemented. This script:
-
-- Loaded the raw NumPy arrays
-- Mapped each image to its corresponding label
-- Converted array data into image format
-- Saved images into class-specific directories
-- The final dataset structure follows the standard image classification layout:
-
-data/raw/
-    train/
-        airplane/
-        automobile/
-        ...
-    test/
-        airplane/
-        automobile/
-        ...
-
-
-This approach ensures:
-
-- Full control over the preprocessing pipeline
-- Transparency in data handling
-- Reproducibility of dataset preparation
-- Compatibility with PyTorch custom Dataset classes
-
-By explicitly handling the dataset conversion process, the project avoids relying on prebuilt dataset loaders and demonstrates a deeper understanding of data preparation workflows.
+- Version-controlled dependencies (uv.lock)
+- DVC-managed datasets and models
+- Modular architecture
+- Controlled experiment configurations
 
 ## Training Procedure and Model Checkpointing
 
@@ -238,7 +269,8 @@ After verifying that the data pipeline and CNN architecture were correctly imple
 
 During the first run, we monitored the training and validation loss values printed in the terminal. We observed that while the training loss continuously decreased, the validation loss reached a minimum at a certain epoch and then started to increase slightly. This behavior indicates the beginning of overfitting.
 
-Terminal output:
+Terminal output example:
+```bash
 using device: cpu
 
 Epoch 1/5
@@ -265,7 +297,7 @@ Epoch 5/5
 ---------------------------------------------
 Train Loss: 0.5378
 Validation Loss: 0.8966
-
+```
 
 To address this, we introduced two important mechanisms:
 
@@ -322,11 +354,11 @@ The hypothesis was that a larger batch size would produce more stable gradient u
 
 ### Results Summary
 
-| Experiment | Learning Rate | Batch Size | Best Validation Loss    |
-|------------|--------------|------------|--------------------------|
-| Exp 1      | 0.001        | 32         | 0.8277    Best Epoch = 4 |
-| Exp 2      | 0.0005       | 32         | 0.8445    Best Epoch = 5 |
-| Exp 3      | 0.001        | 64         | 0.8361    Best Epoch = 5 |
+| Experiment | Learning Rate | Batch Size | Best Epoch | Best Validation Loss |
+|------------|--------------|------------|------------|----------------------|
+| Exp 1      | 0.001        | 32         | 4          | 0.8277               |
+| Exp 2      | 0.0005       | 32         | 5          | 0.8445               |
+| Exp 3      | 0.001        | 64         | 5          | 0.8361               |
 
 The best performing configuration will be selected based on the lowest validation loss.
 
