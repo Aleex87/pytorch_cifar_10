@@ -401,11 +401,16 @@ This can be explained by the fact that with the same number of epochs:
 
 Therefore, within a limited training duration (5 epochs), batch size 32 achieved slightly better generalization.
 
+
+## Acknowledgments
+
+The dataset preprocessing script (`prepare_data.py`) was implemented with reference to publicly available documentation on the CIFAR-10 binary format and Python pickle handling.
+
+The implementation was adapted and simplified to fit the structure and requirements of this project.
+
+
 ### Final Observation
 
 For the current architecture and training setup, a learning rate of 0.001 and batch size of 32 provide the best trade-off between convergence speed and validation performance.
-
-
-
 
 
